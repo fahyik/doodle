@@ -24,25 +24,25 @@
         "<node_internals>/**/*.js"
       ]
     },
+    // {
+    //   "name": "Debug Tests [BUILT]",
+    //   "type": "node",
+    //   "request": "launch",
+    //   "preLaunchTask": "tsc: build - tsconfig.json",
+    //   "runtimeArgs": [
+    //     "--inspect-brk",
+    //     "${workspaceRoot}/node_modules/.bin/jest",
+    //     "--config=${workspaceRoot}/jest-ts-build.config.js",
+    //     "--runInBand",
+    //     "--coverage",
+    //     "true",
+    //     "${workspaceRoot}/build"
+    //   ],
+    //   "console": "integratedTerminal",
+    //   "outFiles": ["${workspaceRoot}/build/**/*.js"]
+    // },
     {
-      "name": "Debug Tests [BUILT]",
-      "type": "node",
-      "request": "launch",
-      "preLaunchTask": "tsc: build - tsconfig.json",
-      "runtimeArgs": [
-        "--inspect-brk",
-        "${workspaceRoot}/node_modules/.bin/jest",
-        "--config=${workspaceRoot}/jest-ts-build.config.js",
-        "--runInBand",
-        "--coverage",
-        "true",
-        "${workspaceRoot}/build"
-      ],
-      "console": "integratedTerminal",
-      "outFiles": ["${workspaceRoot}/build/**/*.js"]
-    },
-    {
-      "name": "Debug Jest Tests [TS]",
+      "name": "Debug Jest Tests",
       "type": "node",
       "request": "launch",
       "runtimeArgs": [
@@ -51,6 +51,20 @@
         "--runInBand",
         "--coverage",
         "false"
+      ],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug Jest Tests [Current File]",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "${workspaceRoot}/node_modules/.bin/jest",
+        "--runInBand",
+        "--coverage",
+        "false",
+        "${file}"
       ],
       "console": "integratedTerminal"
     }
