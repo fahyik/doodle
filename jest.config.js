@@ -1,9 +1,9 @@
 module.exports = {
   transform: {
-    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.[t|j]sx?$": "babel-jest",
   },
   coverageDirectory: ".coverage",
-  testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
+  testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  testPathIgnorePatterns: ["/node_modules/", "/build/"],
+  testPathIgnorePatterns: ["/node_modules/", "/build/", "/lib/"],
 };
