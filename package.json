@@ -13,7 +13,8 @@
   },
   "scripts": {
     "test": "tsc -b && jest --coverage true",
-    "tsc": "tsc -b"
+    "tsc": "tsc -b",
+    "clear": "rm -rf ./.jest-cache ./.coverage ./build ./tsconfig.tsbuildinfo"
   },
   "author": "fahyik"
 }
