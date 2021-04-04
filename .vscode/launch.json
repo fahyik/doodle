@@ -32,11 +32,13 @@
       "runtimeArgs": [
         "--inspect-brk",
         "${workspaceRoot}/node_modules/.bin/jest",
+        "--config=${workspaceRoot}/jest-ts-build.config.js",
         "--runInBand",
         "--coverage",
         "true",
         "${workspaceRoot}/build"
       ],
+      "console": "integratedTerminal",
       "outFiles": ["${workspaceRoot}/build/**/*.js"]
     },
     {
@@ -50,8 +52,7 @@
         "--coverage",
         "false"
       ],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "console": "integratedTerminal"
     }
   ]
 }
