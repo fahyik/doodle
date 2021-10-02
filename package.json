@@ -4,17 +4,21 @@
   "description": "ts doodle",
   "main": "index.js",
   "dependencies": {
-    "typescript": "^4.2.2"
+    "typescript": "^4.4.3"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.21",
+    "@types/jest": "^26.0.24",
     "jest": "^26.6.3",
-    "ts-jest": "^26.5.4"
+    "ts-jest": "^26.5.6"
   },
   "scripts": {
     "test": "tsc -b && jest --coverage true",
     "tsc": "tsc -b",
     "clear": "rm -rf ./.jest-cache ./.coverage ./build ./tsconfig.tsbuildinfo"
   },
-  "author": "fahyik"
+  "author": "fahyik",
+  "volta": {
+    "node": "14.18.0",
+    "npm": "7.24.1"
+  }
 }
