@@ -4,27 +4,195 @@ Vending Machine Programme
 
 ## Getting Started
 
-The command format must use the [sfs-framework](https://github.com/Spendesk/sfs-framework) to build the command objects.
+To install packages:
 
-In this format we make the distinction between technical fields :
+- `$ npm install`
 
-- name
-- commandId
-- actor
+To run the tests:
 
-And the data that is driven by the domain:
+- `$ npm run test`
 
-- metadata
-- payload
+The vending machine is provided as an object with the following interface:
 
 ```typescript
-interface CreateCardCommand extends Command {
-  name: "CreateCardCommand"; // The command name
-  commandId: string; // The command id that will be used as idempotency key
-  actor: string; // User id | Cron id | Webhook Id | ...
-  metadata: any; // Represent the domain context of your command. example : distributorId
-  payload: any; // Defined by your domain
+interface VendingMachine {
+  addProductToInventory(
+    product: ProductInventory
+  ): AddProductOutcome | FailedValidationOutcome;
+  topUpInventory(product: {
+    productId: string;
+    quantityToAdd: number;
+  }): TopUpProductOutcome | FailedValidationOutcome;
+  topUpBank(
+    change: Partial<Change>
+  ): UpdateChangeOutcome | FailedValidationOutcome;
+
+  getBankState(): { bank: Change; balance: number };
+  getBankHistory(): BankEvent[];
+  getInventoryState(): ProductInventory[];
+  getInventoryHistory(): InventoryEvent[];
+
+  sell(
+    productId: string,
+    change: Partial<Change>,
+    acceptNoChange?: boolean
+  ): SellOutcome | FailedValidationOutcome;
 }
+```
+
+## Example
+
+```typescript
+import { buildVendingMachine } from "./vending-machine";
+
+const vendingMachine = buildVendingMachine();
+
+vendingMachine.addProductToInventory({
+  id: "coca-cola",
+  price: 116,
+  quantity: 10,
+});
+// { outcome: 'success' }
+
+vendingMachine.getInventoryState();
+// [ { id: 'coca-cola', price: 116, quantity: 10 } ]
+
+vendingMachine.topUpInventory({ productId: "coca-cola", quantityToAdd: 4 });
+// { outcome: 'success' }
+
+vendingMachine.getInventoryState();
+// [ { id: 'coca-cola', price: 116, quantity: 14 } ]
+
+vendingMachine.getInventoryHistory();
+// [
+//   {
+//     name: 'ProductAdded',
+//     sequence: 1,
+//     data: { productId: 'coca-cola', quantity: 10, price: 116 }
+//   },
+//   {
+//     name: 'ProductToppedUp',
+//     sequence: 2,
+//     data: { productId: 'coca-cola', quantity: 4 }
+//   }
+// ]
+
+vendingMachine.sell("coca-cola", { "20p": 6 });
+// { outcome: 'failure', reason: 'NO_CHANGE_POSSIBLE' }
+
+vendingMachine.topUpBank({ "1p": 10 });
+// { outcome: 'success' }
+
+vendingMachine.sell("coca-cola", { "20p": 6 });
+// {
+//   outcome: 'success',
+//   data: {
+//     productId: 'coca-cola',
+//     change: {
+//       '1p': 4,
+//       '2p': 0,
+//       '5p': 0,
+//       '10p': 0,
+//       '20p': 0,
+//       '50p': 0,
+//       '100p': 0,
+//       '200p': 0
+//     }
+//   }
+// }
+
+vendingMachine.getBankState();
+// {
+//   bank: {
+//     '1p': 6,
+//     '2p': 0,
+//     '5p': 0,
+//     '10p': 0,
+//     '20p': 6,
+//     '50p': 0,
+//     '100p': 0,
+//     '200p': 0
+//   },
+//   balance: 126
+// }
+
+vendingMachine.getBankHistory();
+// [
+//   {
+//     name: "ChangeAdded",
+//     data: {
+//       change: {
+//         "1p": 10,
+//         "2p": 0,
+//         "5p": 0,
+//         "10p": 0,
+//         "20p": 0,
+//         "50p": 0,
+//         "100p": 0,
+//         "200p": 0,
+//       },
+//       relatedSaleId: undefined,
+//     },
+//     sequence: 1,
+//   },
+//   {
+//     name: "ChangeAdded",
+//     data: {
+//       change: {
+//         "1p": 0,
+//         "2p": 0,
+//         "5p": 0,
+//         "10p": 0,
+//         "20p": 6,
+//         "50p": 0,
+//         "100p": 0,
+//         "200p": 0,
+//       },
+//       relatedSaleId: "cded8487-8ad2-4765-ad7a-605189814fce",
+//     },
+//     sequence: 2,
+//   },
+//   {
+//     name: "ChangeRemoved",
+//     data: {
+//       change: {
+//         "1p": 4,
+//         "2p": 0,
+//         "5p": 0,
+//         "10p": 0,
+//         "20p": 0,
+//         "50p": 0,
+//         "100p": 0,
+//         "200p": 0,
+//       },
+//       relatedSaleId: "cded8487-8ad2-4765-ad7a-605189814fce",
+//     },
+//     sequence: 3,
+//   },
+// ]
+```
+
+You can also choose to initialise the machine with change or products:
+
+```typescript
+const vendingMachine = buildVendingMachine({
+  initialBank: {
+    "1p": 10,
+    "2p": 20,
+    "5p": 10,
+    "10p": 1,
+    "20p": 2,
+    "50p": 1,
+    "100p": 0,
+    "200p": 0,
+  },
+  initialInventory: [
+    { id: "apple", price: 13, quantity: 2 },
+    { id: "muesli-bar", price: 23, quantity: 2 },
+    { id: "coca-cola", price: 7, quantity: 1 },
+    { id: "bonbon", price: 17, quantity: 0 },
+  ],
+});
 ```
 
 ## TODOs / Improvements
@@ -34,7 +202,7 @@ interface CreateCardCommand extends Command {
 - vending machine instance is ephemeral, use a data store to persist data
 - updates to state and events in the Inventory and Bank objects should be transactional
 - concurrent update to Inventory and Bank objects should also be transactional -> i.e. the sell action
-- calculateChange() method can be further optimised
+- calculateChange() method can be further optimised (it's possible that it returns no change even if change is possible)
 
 #### Features
 
