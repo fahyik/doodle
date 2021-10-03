@@ -186,7 +186,7 @@ export function buildVendingMachine(init?: {
   function sell(
     productId: string,
     change: Partial<Change>,
-    acceptNoChange?: boolean
+    acceptNoChange: boolean = false
   ): SellOutcome | FailedValidationOutcome {
     const changeValidation = changeValidationSchema.validate(change);
 
@@ -231,17 +231,20 @@ export function buildVendingMachine(init?: {
       );
 
       if (calculateChangeResult.outcome === "failure") {
-        if (calculateChangeResult.reason === "UNABLE_TO_GENERATE_CHANGE") {
+        if (calculateChangeResult.reason === "INVALID_AMOUNT_PROVIDED") {
+          throw new Error("Something went wrong");
+        }
+
+        if (!acceptNoChange) {
           // TODO: we could let buyer override this by accepting that they will not be given change
           return {
             outcome: "failure",
             reason: "NO_CHANGE_POSSIBLE",
           };
-        } else {
-          throw new Error("Something went wrong");
         }
+      } else {
+        changeReturn = calculateChangeResult.data.change;
       }
-      changeReturn = calculateChangeResult.data.change;
     }
 
     // NOTE: the following block should be transactional

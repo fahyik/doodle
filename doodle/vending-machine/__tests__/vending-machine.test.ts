@@ -59,6 +59,7 @@ describe("#vendingMachine", () => {
                 "1p": 1,
               });
               expect(result).toHaveProperty("outcome", "success");
+              expect(result).toHaveProperty("data.productId", "apple");
               expect(result).toHaveProperty("data.change", undefined);
             });
           });
@@ -69,6 +70,7 @@ describe("#vendingMachine", () => {
                 "10p": 3,
               });
               expect(result).toHaveProperty("outcome", "success");
+              expect(result).toHaveProperty("data.productId", "muesli-bar");
               expect(result).toHaveProperty("data.change", {
                 "1p": 0,
                 "2p": 1,
@@ -95,13 +97,34 @@ describe("#vendingMachine", () => {
         });
 
         describe("and a valid product to sell", () => {
-          describe("and with more than sufficient change", () => {
+          describe("and with more than sufficient change than machine can return", () => {
             it("does not sell", () => {
               const result = machine.sell("muesli-bar", {
                 "10p": 3,
               });
               expect(result).toHaveProperty("outcome", "failure");
               expect(result).toHaveProperty("reason", "NO_CHANGE_POSSIBLE");
+            });
+          });
+        });
+
+        describe("and a valid product to sell", () => {
+          describe("and with more than sufficient change than machine can return", () => {
+            describe("but buyer accepts that he/she will get no change", () => {
+              it("sells and return no change", () => {
+                const result = machine.sell(
+                  "coca-cola",
+                  {
+                    "10p": 1,
+                    "2p": 1,
+                    "1p": 1,
+                  },
+                  true
+                );
+                expect(result).toHaveProperty("outcome", "success");
+                expect(result).toHaveProperty("data.productId", "coca-cola");
+                expect(result).toHaveProperty("data.change", undefined);
+              });
             });
           });
         });
