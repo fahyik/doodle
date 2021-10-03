@@ -6,4 +6,6 @@ module.exports = {
   testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   testPathIgnorePatterns: ["/node_modules/", "/build/"],
+  collectCoverage: true,
+  collectCoverageFrom: ["doodle/**/*.ts"],
 };
