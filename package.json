@@ -1,20 +1,33 @@
 {
-  "name": "doodle",
+  "name": "@xuffux/ts-express-doodle",
   "version": "0.0.0",
   "description": "ts doodle",
-  "main": "index.js",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
+    "express": "^4.17.3",
     "typescript": "^4.6.3"
   },
   "devDependencies": {
+    "@types/express": "^4.17.13",
     "@types/jest": "^27.4.1",
     "jest": "^27.5.1",
-    "ts-jest": "^27.1.4"
+    "nodemon": "^2.0.15",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0"
   },
   "scripts": {
+    "clear": "rm -rf ./.jest-cache ./.coverage ./build ./tsconfig.tsbuildinfo",
+    "dev": "nodemon ./src/index.ts",
     "test": "tsc -b && jest --coverage true",
-    "tsc": "tsc -b",
-    "clear": "rm -rf ./.jest-cache ./.coverage ./build ./tsconfig.tsbuildinfo"
+    "tsc": "tsc -b"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "*.test.ts",
+      "build/*"
+    ],
+    "delay": 1000
   },
   "author": "fahyik",
   "volta": {
