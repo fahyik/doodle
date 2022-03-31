@@ -8,7 +8,7 @@ type AppConfig = {
   spotifyClientId: string;
   spotifyClientSecret: string;
   jwtSecret: string;
-  authPath: string;
+  clientCallbackUrl: string;
 };
 
 function buildApp(config: AppConfig) {
@@ -20,13 +20,13 @@ function buildApp(config: AppConfig) {
     spotifyClientId: config.spotifyClientId,
     spotifyClientSecret: config.spotifyClientSecret,
     jwtSecret: config.jwtSecret,
-    callbackUrl: config.authPath + "/callback",
+    callbackUrl: config.clientCallbackUrl,
     userStore,
   });
 
   app.use(passport.initialize());
 
-  app.use(buildAuthRouter(passport, config.authPath, config.jwtSecret));
+  app.use(buildAuthRouter(passport, config.jwtSecret));
 
   app.use(
     "/api",

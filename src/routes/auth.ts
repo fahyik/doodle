@@ -2,23 +2,20 @@ import { Router } from "express";
 import { PassportStatic } from "passport";
 import jwt from "jsonwebtoken";
 
-function buildAuthRouter(
-  passport: PassportStatic,
-  authPath: string,
-  jwtSecret: string
-) {
+function buildAuthRouter(passport: PassportStatic, jwtSecret: string) {
   const authRouter = Router();
 
-  authRouter.get(
-    authPath,
+  authRouter.get("/auth/spotify", function (req, res) {
     passport.authenticate("spotify", {
       scope: ["user-read-email", "user-read-private", "user-top-read"],
       showDialog: true,
-    } as any)
-  );
+      ...(req.query.state && { state: req.query.state }),
+    } as any)(req, res);
+  });
 
+  // this route should be called by front-end
   authRouter.get(
-    authPath + "/callback",
+    "/auth/spotify/callback",
     passport.authenticate(
       "spotify"
       // { failureRedirect: "/login" }
@@ -28,6 +25,14 @@ function buildAuthRouter(
       return res.json({ token });
     }
   );
+
+  // this is a spoof route for callback for testing
+  authRouter.get("/auth/spotify/spoof-callback", function (req, res) {
+    return res.json({
+      state: req.query.state,
+      code: req.query.code,
+    });
+  });
 
   return authRouter;
 }
