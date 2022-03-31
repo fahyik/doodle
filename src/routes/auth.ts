@@ -26,8 +26,8 @@ function buildAuthRouter(passport: PassportStatic, jwtSecret: string) {
     }
   );
 
-  // this is a spoof route for callback for testing
-  authRouter.get("/auth/spotify/spoof-callback", function (req, res) {
+  // for testing
+  authRouter.get("/auth/spotify/callback-intercept", function (req, res) {
     return res.json({
       state: req.query.state,
       code: req.query.code,
