@@ -2,23 +2,25 @@
   "name": "doodle",
   "version": "0.0.0",
   "description": "ts doodle",
+  "author": "fahyik",
   "main": "index.js",
+  "scripts": {
+    "clear": "rm -rf ./.jest-cache ./.coverage ./build ./tsconfig.tsbuildinfo",
+    "sort-package-json": "npx sort-package-json",
+    "test": "tsc -b && jest --coverage true",
+    "tsc": "tsc -b"
+  },
   "dependencies": {
-    "typescript": "^4.6.3"
+    "typescript": "^4.9.5"
   },
   "devDependencies": {
-    "@types/jest": "^27.4.1",
+    "@types/jest": "^27.5.2",
     "jest": "^27.5.1",
-    "ts-jest": "^27.1.4"
+    "ts-jest": "^27.1.5",
+    "ts-node": "^10.9.1"
   },
-  "scripts": {
-    "test": "tsc -b && jest --coverage true",
-    "tsc": "tsc -b",
-    "clear": "rm -rf ./.jest-cache ./.coverage ./build ./tsconfig.tsbuildinfo"
-  },
-  "author": "fahyik",
   "volta": {
-    "node": "16.14.2",
-    "npm": "8.5.0"
+    "node": "18.7.0",
+    "npm": "9.8.1"
   }
 }
