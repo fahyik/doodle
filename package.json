@@ -8,13 +8,19 @@
     "clear": "rm -rf ./.jest-cache ./.coverage ./build ./tsconfig.tsbuildinfo",
     "sort-package-json": "npx sort-package-json",
     "test": "tsc -b && jest --coverage true",
-    "tsc": "tsc -b"
+    "tsc": "tsc -b",
+    "start": "ts-node ./doodle/index.ts"
   },
   "dependencies": {
-    "typescript": "^4.9.5"
+    "csv-parser": "^3.0.0",
+    "email-validator": "^2.0.4",
+    "libphonenumber-js": "^1.10.37",
+    "typescript": "^4.9.5",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/jest": "^27.5.2",
+    "@types/uuid": "^9.0.2",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.5",
     "ts-node": "^10.9.1"

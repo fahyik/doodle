@@ -15,7 +15,9 @@
     "newLine": "lf",
     "noErrorTruncation": true,
     "skipLibCheck": true,
-    "outDir": "./build"
+    "outDir": "./build",
+    "resolveJsonModule": true
   },
-  "exclude": ["node_modules", "./build"]
+  "exclude": ["node_modules", "./build"],
+  "include": ["doodle", "doodle/**/*.json"]
 }
